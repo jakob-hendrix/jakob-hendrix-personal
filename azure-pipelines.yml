@@ -9,8 +9,8 @@ trigger:
 pool:
   vmImage: windows-2022
 
-variables:
-  buildConfiguration: 'Release'
+#variables:
+#  buildConfiguration: 'Release'
 
 steps:
 - task: UseDotNet@2
@@ -20,5 +20,18 @@ steps:
     version: '6.0.x'
     performMultiLevelLookup: true
 
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+#- script: dotnet build --configuration $(buildConfiguration)
+#  displayName: 'dotnet build $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore project dependencies'
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build the project - Release'
+  inputs:
+    command: 'build'
+    arguments: '--no-restore --configuration Release'
+    projects: '**/*.csproj'
